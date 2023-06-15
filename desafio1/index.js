@@ -72,9 +72,9 @@ const product2 = {
 // Agregar producto1 al carrito
 productManager.addProduct(product1)
 // Agregar producto2 al carrito, pero arroja que ya existe al tener el mismo codigo
-console.log(productManager.addProduct(product2))
+productManager.addProduct(product2)
 // Obtener el carrito
-console.log(productManager.getProducts())
+productManager.getProducts()
 // Obtener el producto con el id seleccionado
 productManager.getProductsById(1)
 // Obtener el producto con el id seleccionado, (Tira not found) al no encontrarlo
