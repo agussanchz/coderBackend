@@ -1,6 +1,7 @@
 import express from 'express'
 import mongoose from 'mongoose'
 import productRouter from './routes/productRouter.js'
+import cartRouter from './routes/cartRouter.js'
 
 // Conectando a mongoose
 try {
@@ -17,6 +18,7 @@ app.use(express.urlencoded({ extended: true }))
 
 // Rutas
 app.use('/api/products', productRouter)
+app.use('/api/carts', cartRouter)
 
 // Llamando al servidor en puerto
 app.listen(PORT, () => {
