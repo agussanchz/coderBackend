@@ -15,7 +15,8 @@ export const createProduct = async (req, res) => {
 export const getProducts = async (req, res) => {
     try {
         const manager = new ProductManager()
-        const products = await manager.getProducts()
+        const { limit, sort, category, page } = req.query
+        const products = await manager.getProducts(+limit, sort, category, +page)
         res.send({ status: 'sucess', products })
     } catch (error) {
         console.log('Erorr in getAll products' + error)

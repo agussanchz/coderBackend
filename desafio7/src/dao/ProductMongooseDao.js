@@ -2,22 +2,10 @@ import productModel from "../models/productSchema.js";
 
 class ProductMongooseDao {
     // Obtener todos los productos
-    async getProducts() {
-        const product = await productModel.find()
-
-        return product.map((document) => (
-            {
-                id: document._id,
-                title: document.title,
-                description: document.description,
-                code: document.code,
-                price: document.price,
-                status: document.status,
-                stock: document.stock,
-                category: document.category,
-                thumbnail: document.thumbnail
-            }
-        ))
+    async getProducts(aggregationStages, pagination) {
+        const data = await productModel.paginate({ category: pagination.category }, { limit: pagination.limit, page: pagination.page})
+        console.log(data)
+        return productModel.aggregate(aggregationStages)
     }
 
     // Crear productos
