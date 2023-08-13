@@ -20,6 +20,12 @@ class CartMongooseDao {
     async addProductInCart(cartId, cart) {
         return await cartSchema.updateOne({ _id: cartId }, cart)
     }
+
+
+    // Eliminar producto dentro del carrito seleccionado
+    async deleteProductInCart(cartId, newCart) {
+        return await cartSchema.findOneAndUpdate({ _id: cartId }, newCart)
+    }
 }
 
 export default CartMongooseDao

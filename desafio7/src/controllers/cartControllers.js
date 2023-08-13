@@ -47,3 +47,16 @@ export const addProductInCart = async (req, res) => {
         console.log('Error in addProductInCart' + error)
     }
 }
+
+// Eliminar producto dentro del carrito seleccionado
+export const deleteProductInCart = async (req, res) => {
+    try {
+        const cartId = req.params.cid
+        const productId = req.params.pid
+        const cartManager = new CartManager()
+        const data = await cartManager.deleteProductInCart(cartId, productId)
+        res.send({ status: 'sucess', data, message: 'Product deleted.' })
+    } catch (error) {
+        console.log('Error in deleteProductInCart' + error)
+    }
+}

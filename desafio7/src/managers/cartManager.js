@@ -34,6 +34,13 @@ class CartManager {
 
         return this.cartDao.addProductInCart(cartId, cart)
     }
+
+    // Eliminar producto dentro del carrito seleccionado
+    async deleteProductInCart(cartId, productId) {
+        const cart = await this.cartDao.getCartById({ _id: cartId })
+        const newCart = cart.products.filter((product) => product.id !== productId)
+        return this.cartDao.deleteProductInCart(cartId, { products: newCart })
+    }
 }
 
 export default CartManager
