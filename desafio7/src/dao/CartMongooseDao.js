@@ -8,7 +8,8 @@ class CartMongooseDao {
 
     // Obtener carrito
     async getCartById(id) {
-        return await cartSchema.findOne({ _id: id })
+        const cart = await cartSchema.findOne({ _id: id })
+        return cart
     }
 
     // Eliminar carrito 
@@ -20,7 +21,6 @@ class CartMongooseDao {
     async addProductInCart(cartId, cart) {
         return await cartSchema.updateOne({ _id: cartId }, cart)
     }
-
 
     // Eliminar producto dentro del carrito seleccionado
     async deleteProductInCart(cartId, newCart) {

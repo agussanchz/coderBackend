@@ -27,7 +27,7 @@ class CartManager {
         const product = await this.productDao.getProductById({ _id: productId })
 
         if (product) {
-            cart.products.push({ product: product.id })
+            cart.products.push(product)
         } else {
             console.log('This product no exist')
         }
@@ -38,8 +38,10 @@ class CartManager {
     // Eliminar producto dentro del carrito seleccionado
     async deleteProductInCart(cartId, productId) {
         const cart = await this.cartDao.getCartById({ _id: cartId })
-        const newCart = cart.products.filter((product) => product.id !== productId)
-        return this.cartDao.deleteProductInCart(cartId, { products: newCart })
+    
+        const filterCart = cart.products.filter((prod) => prod.id != productId)
+  
+        return this.cartDao.deleteProductInCart(cartId, { products: filterCart})
     }
 }
 
