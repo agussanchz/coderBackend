@@ -26,6 +26,11 @@ class CartMongooseDao {
     async deleteProductInCart(cartId, newCart) {
         return await cartSchema.findOneAndUpdate({ _id: cartId }, newCart)
     }
+
+    // Actualizar carrito completo
+    async updateCart(cartId, updatedCart) {
+        return await cartSchema.updateOne({ _id: cartId }, updatedCart)
+    }
 }
 
 export default CartMongooseDao

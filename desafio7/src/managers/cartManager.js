@@ -38,10 +38,19 @@ class CartManager {
     // Eliminar producto dentro del carrito seleccionado
     async deleteProductInCart(cartId, productId) {
         const cart = await this.cartDao.getCartById({ _id: cartId })
-    
+
         const filterCart = cart.products.filter((prod) => prod.id != productId)
-  
-        return this.cartDao.deleteProductInCart(cartId, { products: filterCart})
+
+        return this.cartDao.deleteProductInCart(cartId, { products: filterCart })
+    }
+
+    // Actualizar carrito
+    async updateCart(cartId, newData) {
+        const cart = await this.cartDao.getCartById({ _id: cartId })
+        if (cart) {
+            const updatedCart = { ...cart, ...newData }
+            return this.cartDao.updateCart(cartId, updatedCart)
+        }
     }
 }
 

@@ -60,3 +60,16 @@ export const deleteProductInCart = async (req, res) => {
         console.log('Error in deleteProductInCart' + error)
     }
 }
+
+// Actualizar el carrito 
+export const updateCart = async (req, res) => {
+    try {
+        const cartId = req.params.cid
+        const newData = req.body
+        const manager = new CartManager()
+        const result = await manager.updateCart(cartId, newData)
+        res.send({ status: 'sucess', cart: result, message: 'Product updated.' })
+    } catch (error) {
+        console.log('Error in updateCart ' + error)
+    }
+}
