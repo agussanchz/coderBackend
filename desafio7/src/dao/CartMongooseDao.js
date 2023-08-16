@@ -31,6 +31,11 @@ class CartMongooseDao {
     async updateCart(cartId, updatedCart) {
         return await cartSchema.updateOne({ _id: cartId }, updatedCart)
     }
+
+      // Actualizar cantidad de un producto dentro del cart
+    async updateQuantity(cartId, cart){
+        return await cartSchema.findOneAndUpdate({ _id: cartId }, cart)
+    }
 }
 
 export default CartMongooseDao

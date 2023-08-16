@@ -1,6 +1,7 @@
 import CartMongooseDao from "../dao/CartMongooseDao.js"
 import ProductMongooseDao from "../dao/ProductMongooseDao.js";
 
+
 class CartManager {
     constructor() {
         this.cartDao = new CartMongooseDao()
@@ -23,11 +24,24 @@ class CartManager {
 
     // Actualizar carrito (agregando producto) 
     async addProductInCart(cartId, productId) {
-        const cart = await this.cartDao.getCartById({ _id: cartId })
+        let cart = await this.cartDao.getCartById({ _id: cartId })
         const product = await this.productDao.getProductById({ _id: productId })
+        const productInCart = cart.products.find((prod) => prod.id == productId)
 
-        if (product) {
-            cart.products.push(product)
+        if (productInCart) {
+            const newProductQuantity = {
+                ...productInCart,
+                quantity: productInCart.quantity + 1
+            }
+            const newCart = cart.products.filter((prod) => prod.id != newProductQuantity.id)
+            newCart.push(newProductQuantity)
+
+            cart.products = newCart
+        }
+
+        if (cart && product) {
+            cart.products.push({...product, quantity: 1})
+
         } else {
             console.log('This product no exist')
         }
@@ -51,6 +65,22 @@ class CartManager {
             const updatedCart = { ...cart, ...newData }
             return this.cartDao.updateCart(cartId, updatedCart)
         }
+    }
+
+    // Actualizar cantidad de un producto dentro del cart
+    async updateQuantity(cartId, productId, quantity) {
+        let cart = await this.cartDao.getCartById({ _id: cartId })
+        const product = cart.products.find((prod) => prod.id == productId)
+
+        if (cart && product) {
+            const newProductQuantity = { ...product, quantity: quantity }
+            
+            const newCart = cart.products.filter((prod) => prod.id != newProductQuantity.id)
+            newCart.push(newProductQuantity)
+            cart.products = newCart    
+        }
+
+        return this.cartDao.updateQuantity(cartId, cart)
     }
 }
 
