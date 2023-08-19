@@ -40,8 +40,7 @@ class CartManager {
         }
 
         if (cart && product) {
-            cart.products.push({...product, quantity: 1})
-
+            cart.products.push({ ...product, quantity: 1 })
         } else {
             console.log('This product no exist')
         }
@@ -74,10 +73,11 @@ class CartManager {
 
         if (cart && product) {
             const newProductQuantity = { ...product, quantity: quantity }
-            
             const newCart = cart.products.filter((prod) => prod.id != newProductQuantity.id)
             newCart.push(newProductQuantity)
-            cart.products = newCart    
+            cart.products = newCart
+        } else {
+            return 'Error in updateQuantity'
         }
 
         return this.cartDao.updateQuantity(cartId, cart)
