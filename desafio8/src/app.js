@@ -1,12 +1,10 @@
 import express from 'express'
 import mongoose from 'mongoose'
-import MongoStore from "connect-mongo"
-import session from "express-session"
-import cookieParser from "cookie-parser"
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
+import mongoStore from 'connect-mongo'
 import productRouter from './routes/productRouter.js'
 import cartRouter from './routes/cartRouter.js'
-import loginRouter from './routes/loginRouter.js'
-import signupRouter from './routes/signupRouter.js'
 import sessionRouter from './routes/sessionRouter.js'
 import * as dotenv from "dotenv";
 
@@ -18,8 +16,37 @@ const URL_MONGOOSE = process.env.URL_MONGOOSE
 
 // Creacion del puerto y conexion a server en express
 const app = express()
+app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
+
+// Creando session con mongodb
+app.use(session({
+    store:mongoStore.create({
+        mongoUrl: URL_MONGOOSE,
+        mongoOptions: {
+            useNewUrlParser: true,
+            useUnifiedTopology: true,
+          },
+          ttl: 30,
+        }),
+        secret: "codersecret",
+        resave: false,
+        saveUninitialized: false,
+    }))
+
+// Cookies
+app.get('/setCookie', (req, res) => {
+    res.cookie('CoderCookie', 'Cookie del servidor', {maxAge: 10000}).send('Cookie')
+})
+
+app.get('/getCookie', (req, res) => {
+    res.send(req.cookies)
+})
+
+app.get('/deleteCookie', (req, res) => {
+    res.clearCookie('CoderCookie').send('Cookie removed')
+})
 
 // Conectando a mongoose
 try {
@@ -32,9 +59,8 @@ try {
 // Rutas
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
-app.use('/', loginRouter)
-app.use('/singup', signupRouter)
 app.use('/api/session', sessionRouter)
+
 
 // Llamando al servidor en puerto
 app.listen(PORT, () => {
