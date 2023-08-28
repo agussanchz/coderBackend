@@ -6,7 +6,9 @@ import mongoStore from 'connect-mongo'
 import productRouter from './routes/productRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import sessionRouter from './routes/sessionRouter.js'
-import * as dotenv from "dotenv";
+import * as dotenv from "dotenv"
+import passport from 'passport'
+import initializePassport from './config/passport.config.js'
 
 // Config dotenv
 dotenv.config();
@@ -22,22 +24,27 @@ app.use(express.urlencoded({ extended: true }))
 
 // Creando session con mongodb
 app.use(session({
-    store:mongoStore.create({
+    store: mongoStore.create({
         mongoUrl: URL_MONGOOSE,
         mongoOptions: {
             useNewUrlParser: true,
             useUnifiedTopology: true,
-          },
-          ttl: 30,
-        }),
-        secret: "codersecret",
-        resave: false,
-        saveUninitialized: false,
-    }))
+        },
+        ttl: 30,
+    }),
+    secret: "codersecret",
+    resave: false,
+    saveUninitialized: false,
+}))
+
+// Iniciando passport
+initializePassport();
+app.use(passport.initialize())
+app.use(passport.session())
 
 // Cookies
 app.get('/setCookie', (req, res) => {
-    res.cookie('CoderCookie', 'Cookie del servidor', {maxAge: 10000}).send('Cookie')
+    res.cookie('CoderCookie', 'Cookie del servidor', { maxAge: 10000 }).send('Cookie')
 })
 
 app.get('/getCookie', (req, res) => {
