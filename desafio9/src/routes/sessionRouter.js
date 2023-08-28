@@ -5,7 +5,7 @@ import passport from "passport";
 
 const sessionRouter = Router()
 
-// login
+// login con passport
 sessionRouter.post('/login', passport.authenticate('login', {failureRedirect:'/failLogin'}), async (req, res) => {
     if(!req.user) return res.status(400).send({status: 'error', error: 'Invalid credentials'})
     req.session.user = {
@@ -21,7 +21,7 @@ sessionRouter.get('/failLogin', async (req, res) => {
     console.log('failed login')
 })
 
-// registro
+// registro con passport
 sessionRouter.post('/register', passport.authenticate('register', { failureRedirect: '/faileRegister' }), async (req, res) => {
     res.send({ status: 'sucess', message: 'User registered' })
 })
@@ -29,6 +29,16 @@ sessionRouter.post('/register', passport.authenticate('register', { failureRedir
 sessionRouter.get('/failRegister', async (req, res) => {
     console.log('failed strategy')
 })
+
+
+// registro con passport y github
+sessionRouter.get('/github', passport.authenticate('github', {scope: ['user: email']}), async (req, res) => {})
+
+sessionRouter.get('/githubcallback', passport.authenticate('github', {failureRedirect:'/login'}), async(req, res) => {
+    req.session.user = req.user
+    res.redirect('/')
+})
+
 
 // cierre de sesion
 sessionRouter.get("/logout", logoutUser)
