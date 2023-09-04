@@ -32,7 +32,7 @@ const initializePassport = () => {
                 let result = await userSchema.create(newUser)
                 return done(null, result)
             } catch (error) {
-                return done('Erro al obtener usuario' + error)
+                return done('Error in get user' + error)
             }
         }
     ))
