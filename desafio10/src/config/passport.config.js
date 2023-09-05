@@ -1,71 +1,37 @@
 import passport from 'passport'
-import local from 'passport-local'
-import userSchema from '../models/userSchema.js'
-import { createHash, isValidPassword } from '../utils.js'
+import jwt from 'passport-jwt'
+import * as dotenv from "dotenv"
 
-const LocalStrategy = local.Strategy
+// Config dotenv
+dotenv.config();
+const PRIVATE_KEY = process.env.PRIVATE_KEY
+
+const cookieExtractor = req => {
+    let token = null
+    if (req && req.cookies){
+        token = req.cookies['coderTokenCookie']
+    }
+    return token
+}
+
+const JWTstrategy = jwt.Strategy
+const ExtractJWT = jwt.ExtractJwt
 
 const initializePassport = () => {
-    // Registro con passport
-    passport.use('register', new LocalStrategy(
+    passport.use('jwt', new JWTstrategy(
         {
-            passReqToCallback: true,
-            usernameField: 'email'
+            jwtFromRequest: ExtractJWT.fromExtractors([cookieExtractor]),
+            secretOrKey: PRIVATE_KEY,
         },
-        async (req, email, password, done) => {
-            const { first_name, last_name, age } = req.body
+        async (jwt_payload, done) => {
             try {
-                let user = await userSchema.findOne({ email: email })
-                if (user) {
-                    console.log('User already exist')
-                    return done(null, false)
-                }
-
-                const newUser = {
-                    first_name,
-                    last_name,
-                    email,
-                    password: createHash(password),
-                    age
-                }
-
-                let result = await userSchema.create(newUser)
-                return done(null, result)
-            } catch (error) {
-                return done('Error in get user' + error)
-            }
-        }
-    ))
-
-    // Login con passport
-    passport.use('login', new LocalStrategy(
-        {
-            usernameField: 'email'
-        },
-        async (email, password, done) => {
-            try {
-                const user = await userSchema.findOne({ email: email })
-                if (!user) {
-                    console.log('User not exist')
-                    return done(null, false)
-                }
-                if (!isValidPassword(user, password)) return done(null, false)
-                return done(null, user)
+                return done(null, jwt_payload)
             } catch (error) {
                 return done(error)
             }
         }
     ))
 
-    // Serializador y deserializador general
-    passport.serializeUser((user, done) => {
-        done(null, user._id)
-    })
-
-    passport.deserializeUser(async (id, done) => {
-        let user = await userSchema.findById(id)
-        done(null, user)
-    })
 }
 
 export default initializePassport

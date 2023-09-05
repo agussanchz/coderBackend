@@ -4,9 +4,9 @@ import cookieParser from 'cookie-parser'
 import productRouter from './routes/productRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import sessionRouter from './routes/sessionRouter.js'
-import * as dotenv from "dotenv"
-import passport from 'passport'
 import initializePassport from './config/passport.config.js'
+import passport from 'passport'
+import * as dotenv from "dotenv"
 
 // Config dotenv
 dotenv.config();
@@ -16,29 +16,13 @@ const URL_MONGOOSE = process.env.URL_MONGOOSE
 
 // Creacion del puerto y conexion a server en express
 const app = express()
-app.use(cookieParser())
 app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
-
-// Cookies
-app.get('/setCookie', (req, res) => {
-    res.cookie('CoderCookie', 'Cookie del servidor', { maxAge: 10000 }).send('Cookie')
-})
-
-app.get('/getCookie', (req, res) => {
-    res.send(req.cookies)
-})
-
-app.get('/deleteCookie', (req, res) => {
-    res.clearCookie('CoderCookie').send('Cookie removed')
-})
-
-
-// Iniciando passport
-initializePassport();
+// Cookies y passport
+app.use(cookieParser())
+initializePassport()
 app.use(passport.initialize())
-app.use(passport.session())
 
 
 // Conectando a mongoose

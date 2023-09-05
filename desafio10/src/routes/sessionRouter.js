@@ -1,39 +1,52 @@
 import { Router } from "express";
 import { logoutUser } from "../controllers/userControllers.js";
-import passport from "passport";
+import userSchema from "../models/userSchema.js";
+import { authToken, createHash, generateToken, isValidPassword, passportCall } from "../utils.js";
 
 
 const sessionRouter = Router()
 
-// login con passport
-sessionRouter.post('/login', passport.authenticate('login', {failureRedirect:'/failLogin'}), async (req, res) => {
-    if(!req.user) return res.status(400).send({status: 'error', error: 'Invalid credentials'})
-    req.session.user = {
-        first_name: req.session.first_name,
-        last_name: req.session.last_name,
-        age: req.session.age,
-        email: req.session.email 
-    }  
-    res.send({status: 'sucess', payload: req.user})    
+// Registro con jwt
+sessionRouter.post('/register', async  (req, res) => {
+    const { first_name, last_name, email, password, age } = req.body
+    const exist = await userSchema.findOne({ email: email })
+    if (exist) return res.status(400).send({ status: 'error', error: 'User already exist' })
+    const user = {
+        first_name,
+        last_name,
+        email,
+        password: createHash(password),
+        age
+    }
+    const result = await userSchema.create(user)
+    const access_token = generateToken(result)
+    res.cookie('coderTokenCookie', access_token, {
+        maxAge: 60*60*1000,
+        httpOnly: true
+    }).send({ status: 'Logged in', access_token })
 })
 
-sessionRouter.get('/failLogin', async (req, res) => {
-    console.log('failed login')
+// Login con jwt
+sessionRouter.post('/login', async  (req, res) => {
+    const { email, password } = req.body
+    const user = await userSchema.findOne({ email: email })
+
+    if (!user) return res.status(400).send({ status: 'errorr', error: 'Ivalid credentials' })
+
+    if (!isValidPassword(user, password)) return res.status(400).send({ status: 'errorr', error: 'Ivalid credentials' })
+
+
+    const access_token = generateToken(user)
+    res.cookie('coderTokenCookie', access_token, {
+        maxAge: 60*60*1000,
+        httpOnly: true
+    }).send({ status: 'Logged in', access_token })
 })
 
-// registro con passport
-sessionRouter.post('/register', passport.authenticate('register', { failureRedirect: '/faileRegister' }), async (req, res) => {
-    res.send({ status: 'sucess', message: 'User registered' })
+// Route current 
+sessionRouter.get('/current', passportCall('jwt'), (req, res) => {
+    res.send(req.user)
 })
 
-sessionRouter.get('/failRegister', async (req, res) => {
-    console.log('failed strategy')
-})
-
-
-// agregar ruta current
-
-// cierre de sesion
-sessionRouter.get("/logout", logoutUser)
 
 export default sessionRouter
