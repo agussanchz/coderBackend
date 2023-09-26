@@ -10,6 +10,9 @@ class UserRepository {
 
     // Creacion del usuario
     async createUser(user) {
+        const exist = await this.userDao.getUser(user.email)
+        if (exist) return res.status(400).send({ status: 'error', error: 'User already exist' })
+
         const newUser = new UserDTO(user)
         return this.userDao.createUser(newUser)
     }
@@ -26,6 +29,17 @@ class UserRepository {
             } else {
                 return { status: 200, message: 'Usuario y contraseña correcta, inicio de sesion exitosa.' }
             }
+        }
+    }
+
+    async getCurrentUser(user) {
+        const exist = await this.userDao.getUser(user.email)
+
+        if (!exist) {
+            return { status: 500, message: 'Usuario sin permisos.' }
+        } else {
+            const newUser = new UserDTO(user)
+            return { status: 200, message: "Bienvenido " + newUser.full_name }
         }
     }
 }

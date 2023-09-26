@@ -1,19 +1,27 @@
 import UserRepository from "../repository/userRepository.js"
-
+import { createHash, generateToken } from "../utils.js";
 
 // Vista del registro y creacion del usuario
 export const createUser = async (req, res) => {
     try {
-        const { first_name, last_name, email, password, age } = req.body
-        const manager = new UserRepository()
-        const newUser = await manager.createUser({
+        const { first_name, last_name, email, password, age, full_name } = req.body
+        const user = {
+            full_name,
             first_name,
             last_name,
             email,
-            password,
+            password: createHash(password),
             age
-        })
-        res.send({ status: 'sucess', newUser, message: 'User created.' })
+        }
+        const manager = new UserRepository()
+        const result = await manager.createUser(user)
+        const access_token = generateToken(result)
+        res.cookie('coderTokenCookie', access_token, {
+            maxAge: 60 * 60 * 1000,
+            httpOnly: true
+        }).send({ status: 'Logged in', access_token })
+
+        res.send({ status: 'sucess', user, message: 'User created.' })
     } catch (error) {
         console.log('Error in createUser' + error)
     }
@@ -26,14 +34,21 @@ export const getUser = async (req, res) => {
         const { email, password } = req.body
         const manager = new UserRepository()
         const user = await manager.getUser(email, password)
-        if (user.status === 200) {
-            req.session.user = user.email
-            req.session.admin = true
-        }
         res.send(user)
     } catch (error) {
         console.log('Error in getLogin' + error)
     }
+}
+
+// Vista current
+export const currentUser = async (req, res) => {
+    const { user } = req.user
+
+    const manager = new UserRepository()
+    const data = await manager.getCurrentUser(user)
+
+    res.send(data)
+
 }
 
 // Vista de cerrar sesion
