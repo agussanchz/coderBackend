@@ -1,5 +1,6 @@
-import UserMongooseDao from "../dao/UserMongooseDao.js"
-import { createHash, isValidPassword } from "../utils.js"
+import UserDTO from "../dao/DTO/userDTO.js"
+import UserMongooseDao from "../dao/mongo/UserMongooseDao.js"
+import { isValidPassword } from "../utils.js"
 
 
 class UserRepository {
@@ -8,15 +9,9 @@ class UserRepository {
     }
 
     // Creacion del usuario
-    async createUser(first_name, last_name, email, password, age) {
-        let user = {
-            first_name,
-            last_name,
-            email,
-            password: createHash(password),
-            age
-        }
-        return this.userDao.createUser(user)
+    async createUser(user) {
+        const newUser = new UserDTO(user)
+        return this.userDao.createUser(newUser)
     }
 
     // Verifico si el usuario existe

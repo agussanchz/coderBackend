@@ -1,5 +1,5 @@
-import CartMongooseDao from "../dao/CartMongooseDao.js"
-import ProductMongooseDao from "../dao/ProductMongooseDao.js";
+import CartMongooseDao from "../dao/mongo/CartMongooseDao.js"
+import ProductMongooseDao from "../dao/mongo/ProductMongooseDao.js"
 
 
 class CartRepository {

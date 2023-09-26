@@ -1,8 +1,6 @@
 import { Router } from "express";
-import { logoutUser } from "../controllers/userControllers.js";
-import userSchema from "../models/userSchema.js";
-import { authToken, createHash, generateToken, isValidPassword, passportCall } from "../utils.js";
-
+import userSchema from "../dao/models/userSchema.js";
+import { createHash, generateToken, isValidPassword, passportCall } from "../utils.js";
 
 const sessionRouter = Router()
 

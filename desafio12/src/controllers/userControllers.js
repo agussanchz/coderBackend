@@ -6,7 +6,13 @@ export const createUser = async (req, res) => {
     try {
         const { first_name, last_name, email, password, age } = req.body
         const manager = new UserRepository()
-        const newUser = await manager.createUser(first_name, last_name, email, password, age)
+        const newUser = await manager.createUser({
+            first_name,
+            last_name,
+            email,
+            password,
+            age
+        })
         res.send({ status: 'sucess', newUser, message: 'User created.' })
     } catch (error) {
         console.log('Error in createUser' + error)
