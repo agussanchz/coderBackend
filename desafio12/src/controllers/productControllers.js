@@ -1,9 +1,9 @@
-import ProductManager from "../managers/productManager.js"
+import ProductRepository from "../repository/productRepository.js"
 
 // Crear products
 export const createProduct = async (req, res) => {
     try {
-        const manager = new ProductManager()
+        const manager = new ProductRepository()
         const products = await manager.createProduct(req.body)
         res.send({ status: 'sucess', products, message: 'Product created.' })
     } catch (error) {
@@ -14,7 +14,7 @@ export const createProduct = async (req, res) => {
 // Obtener todos los productos
 export const getProducts = async (req, res) => {
     try {
-        const manager = new ProductManager()
+        const manager = new ProductRepository()
         const { limit, sort, category, page } = req.query
         const products = await manager.getProducts(+limit, sort, category, +page)
         res.send({ status: 'sucess', products })
@@ -27,7 +27,7 @@ export const getProducts = async (req, res) => {
 export const getProductById = async (req, res) => {
     try {
         const { id } = req.params
-        const manager = new ProductManager()
+        const manager = new ProductRepository()
         const productId = await manager.getProductById(id)
         res.send({ status: 'sucess', productId })
     } catch (error) {
@@ -40,7 +40,7 @@ export const updateProduct = async (req, res) => {
     try {
         const { id } = req.params
         const data = req.body
-        const manager = new ProductManager()
+        const manager = new ProductRepository()
         const updatedProduct = await manager.updateProduct(id, data)
         res.send({ status: 'sucess', updatedProduct, message: 'Product updated.' })
     } catch (error) {
@@ -52,7 +52,7 @@ export const updateProduct = async (req, res) => {
 export const deleteProduct = async (req, res) => {
     try {
         const { id } = req.params
-        const manager = new ProductManager()
+        const manager = new ProductRepository()
         const product = await manager.deleteProduct(id)
         res.send({status:'sucess', product, message: 'Product deleted.'})
     } catch (error) {

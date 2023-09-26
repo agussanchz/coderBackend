@@ -2,7 +2,7 @@ import UserMongooseDao from "../dao/UserMongooseDao.js"
 import { createHash, isValidPassword } from "../utils.js"
 
 
-class UserManager {
+class UserRepository {
     constructor() {
         this.userDao = new UserMongooseDao()
     }
@@ -35,4 +35,4 @@ class UserManager {
     }
 }
 
-export default UserManager
+export default UserRepository

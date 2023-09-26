@@ -2,7 +2,7 @@ import CartMongooseDao from "../dao/CartMongooseDao.js"
 import ProductMongooseDao from "../dao/ProductMongooseDao.js";
 
 
-class CartManager {
+class CartRepository {
     constructor() {
         this.cartDao = new CartMongooseDao()
         this.productDao = new ProductMongooseDao()
@@ -84,4 +84,4 @@ class CartManager {
     }
 }
 
-export default CartManager
+export default CartRepository

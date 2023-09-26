@@ -1,6 +1,6 @@
 import ProductMongooseDao from "../dao/ProductMongooseDao.js";
 
-class ProductManager {
+class ProductRepository {
     constructor() {
         this.productDao = new ProductMongooseDao()
     }
@@ -53,4 +53,4 @@ class ProductManager {
 }
 
 
-export default ProductManager
+export default ProductRepository

@@ -1,9 +1,10 @@
-import CartManager from "../managers/cartManager.js"
+import CartRepository from "../repository/cartRepository.js"
+
 
 // Creacion del carrito con su respectivo id
 export const createCart = async (req, res) => {
     try {
-        const manager = new CartManager()
+        const manager = new CartRepository()
         const cart = await manager.createCart()
         res.send({ status: 'sucess', cart, message: 'Cart created.' })
     } catch (error) {
@@ -15,7 +16,7 @@ export const createCart = async (req, res) => {
 export const getCartById = async (req, res) => {
     try {
         const { id } = req.params
-        const manager = new CartManager()
+        const manager = new CartRepository()
         const cart = await manager.getCartById(id)
         res.send({ status: 'sucess', cart })
     } catch (error) {
@@ -27,7 +28,7 @@ export const getCartById = async (req, res) => {
 export const deleteCart = async (req, res) => {
     try {
         const { id } = req.params
-        const manager = new CartManager()
+        const manager = new CartRepository()
         const cart = await manager.deleteCart(id)
         res.send({ status: 'sucess', cart, message: 'Cart deleted' })
     } catch (error) {
@@ -40,7 +41,7 @@ export const addProductInCart = async (req, res) => {
     try {
         const cartId = req.params.cid
         const productId = req.params.pid
-        const cartManager = new CartManager()
+        const cartManager = new CartRepository()
         const data = await cartManager.addProductInCart(cartId, productId)
         res.send({ status: 'sucess', data, message: 'Product added in cart.' })
     } catch (error) {
@@ -53,7 +54,7 @@ export const deleteProductInCart = async (req, res) => {
     try {
         const cartId = req.params.cid
         const productId = req.params.pid
-        const cartManager = new CartManager()
+        const cartManager = new CartRepository()
         const data = await cartManager.deleteProductInCart(cartId, productId)
         res.send({ status: 'sucess', data, message: 'Product deleted.' })
     } catch (error) {
@@ -66,7 +67,7 @@ export const updateCart = async (req, res) => {
     try {
         const cartId = req.params.cid
         const newData = req.body
-        const manager = new CartManager()
+        const manager = new CartRepository()
         const result = await manager.updateCart(cartId, newData)
         res.send({ status: 'sucess', cart: result, message: 'Product updated.' })
     } catch (error) {
@@ -80,7 +81,7 @@ export const updateQuantity = async (req, res) => {
         const cartId = req.params.cid
         const productId = req.params.pid
         const { quantity } = req.body
-        const manager = new CartManager()
+        const manager = new CartRepository()
         const result = await manager.updateQuantity(cartId, productId, quantity)
         res.send({ status: 'sucess', cart: result, message: 'Quantity updated.' })
     } catch (error) {
