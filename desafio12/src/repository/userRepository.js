@@ -11,10 +11,11 @@ class UserRepository {
     // Creacion del usuario
     async createUser(user) {
         const exist = await this.userDao.getUser(user.email)
-        if (exist) return res.status(400).send({ status: 'error', error: 'User already exist' })
+        if (exist) return { status: 'error', error: 'User already exist' }
 
         const newUser = new UserDTO(user)
-        return this.userDao.createUser(newUser)
+        const userFinally = await this.userDao.createUser(newUser)
+        return { status: 'sucess', message: 'Logged ' + userFinally.email}
     }
 
     // Verifico si el usuario existe
@@ -32,6 +33,7 @@ class UserRepository {
         }
     }
 
+    // Ruta current
     async getCurrentUser(user) {
         const exist = await this.userDao.getUser(user.email)
 

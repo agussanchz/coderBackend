@@ -4,24 +4,33 @@ import { createHash, generateToken } from "../utils.js";
 // Vista del registro y creacion del usuario
 export const createUser = async (req, res) => {
     try {
-        const { first_name, last_name, email, password, age, full_name } = req.body
+        const { first_name, last_name, email, password, age, full_name, role } = req.body
         const user = {
             full_name,
             first_name,
             last_name,
             email,
             password: createHash(password),
-            age
+            age,
+            role
         }
+
+        if(user.email === "agustinsanchez@gmail.com"){
+            user.role = "admin"
+        }else{
+            user.role = "user"
+        }
+
         const manager = new UserRepository()
         const result = await manager.createUser(user)
         const access_token = generateToken(result)
+
         res.cookie('coderTokenCookie', access_token, {
             maxAge: 60 * 60 * 1000,
             httpOnly: true
-        }).send({ status: 'Logged in', access_token })
+        }).send(result)
+   
 
-        res.send({ status: 'sucess', user, message: 'User created.' })
     } catch (error) {
         console.log('Error in createUser' + error)
     }
