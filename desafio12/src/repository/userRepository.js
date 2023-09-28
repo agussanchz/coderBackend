@@ -28,7 +28,7 @@ class UserRepository {
             if (!isValidPassword(emailExist, password)) {
                 return { status: 500, message: 'Contraseña incorrecta.' }
             } else {
-                return { status: 200, message: 'Usuario y contraseña correcta, inicio de sesion exitosa.' }
+                return emailExist
             }
         }
     }
