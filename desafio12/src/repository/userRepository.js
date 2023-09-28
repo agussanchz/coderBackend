@@ -15,7 +15,7 @@ class UserRepository {
 
         const newUser = new UserDTO(user)
         const userFinally = await this.userDao.createUser(newUser)
-        return { status: 'sucess', message: 'Logged ' + userFinally.email}
+        return userFinally
     }
 
     // Verifico si el usuario existe

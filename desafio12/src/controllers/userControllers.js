@@ -28,7 +28,7 @@ export const createUser = async (req, res) => {
         res.cookie('coderTokenCookie', access_token, {
             maxAge: 60 * 60 * 1000,
             httpOnly: true
-        }).send(result)
+        }).send({"result": result, "jwt": access_token})
    
 
     } catch (error) {
@@ -43,7 +43,13 @@ export const getUser = async (req, res) => {
         const { email, password } = req.body
         const manager = new UserRepository()
         const user = await manager.getUser(email, password)
-        res.send(user)
+        const access_token = generateToken(user)
+
+        res.cookie('coderTokenCookie', access_token, {
+            maxAge: 60 * 60 * 1000,
+            httpOnly: true
+        }).send({"result": user, "jwt": access_token})
+        
     } catch (error) {
         console.log('Error in getLogin' + error)
     }
@@ -52,12 +58,9 @@ export const getUser = async (req, res) => {
 // Vista current
 export const currentUser = async (req, res) => {
     const { user } = req.user
-
     const manager = new UserRepository()
     const data = await manager.getCurrentUser(user)
-
     res.send(data)
-
 }
 
 // Vista de cerrar sesion
