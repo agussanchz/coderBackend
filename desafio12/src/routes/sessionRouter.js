@@ -1,6 +1,6 @@
 import { Router } from "express";
 import { createUser, currentUser, getUser } from "../controllers/userControllers.js";
-import { passportCall } from "../utils.js";
+import { passportCall, validateRoleAdmin, validateRoleUser } from "../utils.js";
 
 const sessionRouter = Router()
 
@@ -11,7 +11,7 @@ sessionRouter.post('/register', createUser)
 sessionRouter.post('/login', getUser)
 
 // Route current 
-sessionRouter.get('/current', passportCall('jwt'), currentUser)
+sessionRouter.get('/current', passportCall('jwt'), validateRoleUser,  currentUser)
 
 
 export default sessionRouter

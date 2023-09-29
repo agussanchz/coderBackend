@@ -58,7 +58,6 @@ export const getUser = async (req, res) => {
 // Vista current
 export const currentUser = async (req, res) => {
     const { user } = req.user
-    console.log(user)
     const manager = new UserRepository()
     const data = await manager.getCurrentUser(user)
     res.send(data)

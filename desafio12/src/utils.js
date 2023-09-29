@@ -17,19 +17,22 @@ export const isValidPassword = (user, password) => bcrypt.compareSync(password, 
 
 // Creacion del token
 export const generateToken = (user) => {
-    const token = jwt.sign({ user, role: user.role}, PRIVATE_KEY, { expiresIn: '24h' })
+    const token = jwt.sign({ user, role: user.role }, PRIVATE_KEY, { expiresIn: '24h' })
     return token
 }
 
 // Autorizacion de roles
-export const authorization = (role) => {
-   
-    return async (req, res, next) => {
-        console.log(req.user.role)
-        if (!req.user) return res.status(401).send({ error: "Unauthorized" })
-        if (req.user.role != role) return res.status(403).send({ error: "No permissions" })
-        next()
-    }
+export const validateRoleAdmin = (req, res, next) => {
+    const { role } = req.user;
+    console.log(role)
+    if(role !== 'admin') return res.status(500).json({ error: 'No tiene permisos'})
+    next()
+}
+
+export const validateRoleUser = (req, res, next) => {
+    const { role } = req.user;
+    if(role !== 'user') return res.status(500).json({ error: 'No tiene permisos'})
+    next()
 }
 
 export const passportCall = (strategy) => {
