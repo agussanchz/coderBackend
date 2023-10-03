@@ -5,6 +5,7 @@ import errorHandler from './middlewares/errors/index.js'
 import productRouter from './routes/productRouter.js'
 import cartRouter from './routes/cartRouter.js'
 import sessionRouter from './routes/sessionRouter.js'
+import mockRouter from './routes/mockRouter.js'
 import initializePassport from './config/passport.config.js'
 import passport from 'passport'
 import * as dotenv from "dotenv"
@@ -38,6 +39,7 @@ try {
 app.use('/api/products', productRouter)
 app.use('/api/carts', cartRouter)
 app.use('/api/session', sessionRouter)
+app.use('/api/mockingproducts', mockRouter)
 app.use(errorHandler)
 
 

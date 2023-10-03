@@ -1,11 +1,34 @@
 import ProductRepository from "../repository/productRepository.js"
+import CustomError from "../services/errors/CustomErrors.js";
+import EErrors from "../services/errors/enums.js";
+import { generateProductErrorInfo } from "../services/errors/info.js";
 
 // Crear products
 export const createProduct = async (req, res) => {
     try {
+        const { title, description, code, price, status, stock, thumbnail } = req.body
+        const product = {
+            title,
+            description,
+            code,
+            price,
+            status,
+            stock,
+            thumbnail
+        }
+        if (!title || !description || !code) {
+            CustomError.createError({
+                name: 'User creation error',
+                cause: generateProductErrorInfo({ title, description, code }),
+                message: 'Error in create User',
+                code: EErrors.INVALID_TYPES_ERROR
+            })
+        }
+
         const manager = new ProductRepository()
-        const products = await manager.createProduct(req.body)
-        res.send({ status: 'sucess', products, message: 'Product created.' })
+        const result = await manager.createProduct(product)
+
+        res.send({ status: 'sucess', result, message: 'Product created.' })
     } catch (error) {
         console.log('Erorr in created products' + error)
     }
@@ -54,7 +77,7 @@ export const deleteProduct = async (req, res) => {
         const { id } = req.params
         const manager = new ProductRepository()
         const product = await manager.deleteProduct(id)
-        res.send({status:'sucess', product, message: 'Product deleted.'})
+        res.send({ status: 'sucess', product, message: 'Product deleted.' })
     } catch (error) {
         console.log('Erorr in deleteProductById' + error)
     }

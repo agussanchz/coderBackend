@@ -1,6 +1,7 @@
 import bcrypt from 'bcrypt'
 import jwt from 'jsonwebtoken'
 import passport from 'passport';
+import { faker } from '@faker-js/faker'
 import * as dotenv from "dotenv"
 
 // Config dotenv
@@ -25,13 +26,13 @@ export const generateToken = (user) => {
 export const validateRoleAdmin = (req, res, next) => {
     const { role } = req.user;
     console.log(role)
-    if(role !== 'admin') return res.status(500).json({ error: 'No tiene permisos'})
+    if (role !== 'admin') return res.status(500).json({ error: 'No tiene permisos' })
     next()
 }
 
 export const validateRoleUser = (req, res, next) => {
     const { role } = req.user;
-    if(role !== 'user') return res.status(500).json({ error: 'No tiene permisos'})
+    if (role !== 'user') return res.status(500).json({ error: 'No tiene permisos' })
     next()
 }
 
@@ -49,3 +50,17 @@ export const passportCall = (strategy) => {
     };
 };
 
+
+// Creacion de moking de productos
+export const generateProduct = () => {
+    return {
+        title: faker.commerce.productName(),
+        description: faker.commerce.productDescription(),
+        code: faker.commerce.department(),
+        price: faker.commerce.price(),
+        status: true,
+        stock: faker.string.numeric(1),
+        category: faker.commerce.productAdjective(),
+        thumbanail: faker.image.url()
+    }
+}
