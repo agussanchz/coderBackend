@@ -30,7 +30,9 @@ export const createProduct = async (req, res) => {
 
         res.send({ status: 'sucess', result, message: 'Product created.' })
     } catch (error) {
-        req.logger.error()
+        req.logger.error('Error in createProduct: ' + error.message)
+        req.logger.error(error.stack)
+        res.status(500).json({ error: 'Internal server error '})
         // console.log('Erorr in created products' + error)
     }
 }
